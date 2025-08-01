@@ -1,76 +1,28 @@
-let numeroSecreto = 0;
-let intentos = 0;
-let listaNumerosSorteados = [];
-let numeroMaximo = 10;
+// El principal objetivo de este desafío es fortalecer tus habilidades en lógica de programación. Aquí deberás desarrollar la lógica para resolver el problema.
+function asignarAmigoSecreto(nombres) {
+  const asignaciones = {};
+  const nombresDisponibles = [...nombres]; // Copia de la lista original
 
+  for (let i = 0; i < nombres.length; i++) {
+    const persona = nombres[i];
 
+    // Filtramos para que no se asigne a sí mismo
+    const posibles = nombresDisponibles.filter(nombre => nombre !== persona);
 
-function asignarTextoElemento(elemento, texto) {
-    let elementoHTML = document.querySelector(elemento);
-    elementoHTML.innerHTML = texto;
-    return;
-}
-
-function verificarIntento() {
-    let numeroDeUsuario = parseInt(document.getElementById('valorUsuario').value);
-    
-    if (numeroDeUsuario === numeroSecreto) {
-        asignarTextoElemento('p',`Acertaste el número en ${intentos} ${(intentos === 1) ? 'vez' : 'veces'}`);
-        document.getElementById('reiniciar').removeAttribute('disabled');
-    } else {
-        //El usuario no acertó.
-        if (numeroDeUsuario > numeroSecreto) {
-            asignarTextoElemento('p','El número secreto es menor');
-        } else {
-            asignarTextoElemento('p','El número secreto es mayor');
-        }
-        intentos++;
-        limpiarCaja();
+    if (posibles.length === 0) {
+      // Si no hay opciones válidas, reiniciar el proceso
+      return asignarAmigoSecreto(nombres); // Recursión
     }
-    return;
+
+    // Selecciona un amigo al azar
+    const elegido = posibles[Math.floor(Math.random() * posibles.length)];
+
+    asignaciones[persona] = elegido;
+
+    // Eliminamos al elegido para que no se repita
+    const index = nombresDisponibles.indexOf(elegido);
+    nombresDisponibles.splice(index, 1);
+  }
+
+  return asignaciones;
 }
-
-function limpiarCaja() {
-    document.querySelector('#valorUsuario').value = '';
-}
-
-function generarNumeroSecreto() {
-    let numeroGenerado =  Math.floor(Math.random()*numeroMaximo)+1;
-
-    console.log(numeroGenerado);
-    console.log(listaNumerosSorteados);
-    //Si ya sorteamos todos los números
-    if (listaNumerosSorteados.length == numeroMaximo) {
-        asignarTextoElemento('p','Ya se sortearon todos los números posibles');
-    } else {
-        //Si el numero generado está incluido en la lista 
-        if (listaNumerosSorteados.includes(numeroGenerado)) {
-            return generarNumeroSecreto();
-        } else {
-            listaNumerosSorteados.push(numeroGenerado);
-            return numeroGenerado;
-        }
-    }
-}
-
-function condicionesIniciales() {
-    asignarTextoElemento('h1','Juego del número secreto!');
-    asignarTextoElemento('p',`Indica un número del 1 al ${numeroMaximo}`);
-    numeroSecreto = generarNumeroSecreto();
-    intentos = 1;
-    console.log(numeroSecreto);
-}
-
-function reiniciarJuego() {
-    //limpiar caja
-    limpiarCaja();
-    //Indicar mensaje de intervalo de números 
-    //Generar el número aleatorio
-    //Inicializar el número intentos
-    condicionesIniciales();
-    //Deshabilitar el botón de nuevo juego
-    document.querySelector('#reiniciar').setAttribute('disabled','true');
-    
-}
-
-condicionesIniciales();
